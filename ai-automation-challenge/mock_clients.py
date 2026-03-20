@@ -160,6 +160,10 @@ class MockAnthropicClient:
                 "context_notes": "Automated analysis - consider context for edge cases."
             }
             text = user_content.lower()
+            for line in user_content.splitlines():
+                if line.lower().startswith("content:"):
+                    text = line.split(":", 1)[1].strip().lower()
+                    break
 
             # Claude tends to be more nuanced than keyword matching and can
             # use surrounding context to override obvious false positives.
