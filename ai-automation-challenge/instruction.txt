@@ -1,0 +1,75 @@
+VizzyLabs — Vibe Coding Assessment
+Overview
+Welcome to VizzyLabs technical assessment. This is a live coding session on Lark Meeting — you will solve a real engineering challenge while screen-sharing.
+
+---
+Format
+Platform: Lark Meeting (scheduled by our HR team)
+Duration: 25 minutes total
+Screen share: Required for the entire session
+Phase
+Time
+What happens
+Setup check
+1 min
+Verify your environment runs
+Pre-coding questions
+3 min
+Ask up to 3 questions before coding
+Coding
+15 min
+Solve the challenge with screen share
+Mid-coding question
+—
+1 additional question allowed during coding
+
+Discussion
+5 min
+Explain your approach and code
+
+---
+How Questions Work
+You get 3 questions before coding and 1 question during coding (4 total).
+Ask your questions to the proctor on the call. They will relay to our technical AI advisor and give you the response. The proctor is non-technical — they forward answers only.
+Choose wisely. Good questions show you understand the problem. No questions at all is a red flag.
+
+---
+Challenge Tracks
+You will be assigned ONE track:
+Track A — AI Automation Engineer
+A content moderation service with conflicting stakeholder needs. Creator Success says too many false positives (cooking videos flagged as violence). Trust and Safety says too many false negatives (dangerous content gets through). Engineering wants transparency in decisions. Your job: diagnose trade-offs and improve the system.
+
+---
+Setup (Complete BEFORE the Meeting)
+1. Clone: git clone https://github.com/Vispie-AI/vizzylabs-code-challenge.git
+2. Install and run your track (see README in each folder)
+3. Confirm the server starts on localhost:8000
+4. Have your IDE and AI tools ready
+If setup fails, contact us BEFORE the meeting. Do not waste coding time on setup.
+
+---
+AI Tools Policy
+Use any AI tool: Cursor, Copilot, ChatGPT, Claude. We encourage it.
+But you must explain every line of AI-generated code. In discussion, we will point to code and ask why it works. "The AI wrote it" is not acceptable.
+We evaluate whether you direct AI or AI directs you.
+
+---
+Evaluation
+- Problem Diagnosis (25%): Quality of your questions and understanding
+- Decision Quality (30%): Prioritization, trade-off reasoning
+- AI Workflow (25%): Do you direct AI with intent or just paste and pray?
+- Technical Execution (20%): Does the code work? Is it clean?
+Gets you hired: Smart questions, clear trade-offs, correcting AI output, working code
+Gets you rejected: No questions, asking AI "fix this", cannot explain AI code, no prioritization
+
+---
+Pre-Meeting Checklist
+- Repo cloned and server runs
+- IDE and AI tools ready
+- Lark installed, screen share tested
+- Quiet environment, stable internet
+- Read the challenge README for your track
+You may explore the codebase beforehand. Preparation is encouraged, not cheating.
+
+---
+Questions about logistics? Contact Cissi on Lark. Good luck!
