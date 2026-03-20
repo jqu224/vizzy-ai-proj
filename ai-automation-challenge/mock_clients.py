@@ -88,7 +88,7 @@ class MockModerationResult:
             scores["violence"] = 0.95
             flagged = True
 
-        if any(word in text for word in ["hate", "racist", "slur"]):
+        if any(word in text for word in ["hate", "racist", "slur"]) and "doctors hate" not in text:
             categories["hate"] = True
             scores["hate"] = 0.92
             flagged = True
@@ -151,8 +151,6 @@ class MockAnthropicClient:
                 if msg.get("role") == "user":
                     user_content = msg.get("content", "")
 
-            # Claude tends to be more nuanced than keyword matching
-            # This could be used for appeal review or secondary analysis
             response_json = {
                 "is_safe": True,
                 "confidence": 0.85,
@@ -161,6 +159,107 @@ class MockAnthropicClient:
                 "requires_human_review": False,
                 "context_notes": "Automated analysis - consider context for edge cases."
             }
+            text = user_content.lower()
+            for line in user_content.splitlines():
+                if line.lower().startswith("content:"):
+                    text = line.split(":", 1)[1].strip().lower()
+                    break
+
+            # Claude tends to be more nuanced than keyword matching and can
+            # use surrounding context to override obvious false positives.
+            if any(word in text for word in ["chop", "slice", "dice", "cut", "knife", "butcher"]):
+                if any(word in text for word in ["cook", "recipe", "kitchen", "food", "vegetable", "meat"]):
+                    response_json = {
+                        "is_safe": True,
+                        "confidence": 0.91,
+                        "violation_type": "none",
+                        "reasoning": "Violence-related terms appear in a cooking context, which looks benign.",
+                        "requires_human_review": False,
+                        "context_notes": "Contextual false-positive risk: cooking terminology."
+                    }
+
+            if any(word in text for word in ["shirtless", "abs", "body", "sweaty", "workout"]):
+                if any(word in text for word in ["fitness", "gym", "exercise", "training"]):
+                    response_json = {
+                        "is_safe": True,
+                        "confidence": 0.89,
+                        "violation_type": "none",
+                        "reasoning": "Body-related terms appear in a fitness context, not sexual content.",
+                        "requires_human_review": False,
+                        "context_notes": "Contextual false-positive risk: fitness terminology."
+                    }
+
+            if any(word in text for word in ["blood", "surgery", "injection", "wound"]):
+                if any(word in text for word in ["doctor", "medical", "health", "nurse"]):
+                    response_json = {
+                        "is_safe": True,
+                        "confidence": 0.82,
+                        "violation_type": "none",
+                        "reasoning": "Potentially graphic terms appear in an educational medical context.",
+                        "requires_human_review": True,
+                        "context_notes": "Legitimate medical content may still need manual review depending on policy."
+                    }
+
+            if any(word in text for word in ["miracle", "secret", "doctors hate", "one weird trick"]):
+                if any(word in text for word in ["weight loss", "muscle", "energy", "supplement"]):
+                    response_json = {
+                        "is_safe": False,
+                        "confidence": 0.76,
+                        "violation_type": "spam",
+                        "reasoning": "Promotional health claims resemble supplement spam or deceptive marketing.",
+                        "requires_human_review": True,
+                        "context_notes": "Borderline harmful commercial claims should be reviewed."
+                    }
+
+            if any(phrase in text for phrase in ["those people", "you know who", "certain types"]):
+                response_json = {
+                    "is_safe": False,
+                    "confidence": 0.72,
+                    "violation_type": "hate_speech",
+                    "reasoning": "The content may contain coded or indirect hateful language.",
+                    "requires_human_review": True,
+                    "context_notes": "Subtle hate speech is ambiguous enough to warrant review."
+                }
+
+            if any(word in text for word in ["kill", "attack", "destroy", "murder"]):
+                response_json = {
+                    "is_safe": False,
+                    "confidence": 0.97,
+                    "violation_type": "violence",
+                    "reasoning": "The content contains explicit violent language.",
+                    "requires_human_review": False,
+                    "context_notes": "Clear policy violation."
+                }
+
+            if any(word in text for word in ["hate", "racist", "slur"]) and "doctors hate" not in text:
+                response_json = {
+                    "is_safe": False,
+                    "confidence": 0.96,
+                    "violation_type": "hate_speech",
+                    "reasoning": "The content contains explicit hateful language.",
+                    "requires_human_review": False,
+                    "context_notes": "Clear policy violation."
+                }
+
+            if any(word in text for word in ["nsfw", "explicit", "xxx"]):
+                response_json = {
+                    "is_safe": False,
+                    "confidence": 0.98,
+                    "violation_type": "adult_content",
+                    "reasoning": "The content contains explicit sexual content markers.",
+                    "requires_human_review": False,
+                    "context_notes": "Clear policy violation."
+                }
+
+            if any(word in text for word in ["buy now", "click here", "limited time", "act fast"]):
+                response_json = {
+                    "is_safe": False,
+                    "confidence": 0.9,
+                    "violation_type": "spam",
+                    "reasoning": "The content uses strong commercial spam language.",
+                    "requires_human_review": False,
+                    "context_notes": "Clear policy violation."
+                }
 
             return MockMessage(json.dumps(response_json))
 
